@@ -18,14 +18,24 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
     const data = await response.json();
-    res.status(200).json({ text: data.content?.[0]?.text || 'No response received.' });
+
+    if (data.error) {
+      return res.status(500).json({ error: data.error.message || 'Claude API error' });
+    }
+
+    const text = data.content?.[0]?.text;
+    if (!text) {
+      return res.status(500).json({ error: `Unexpected response: ${JSON.stringify(data)}` });
+    }
+
+    res.status(200).json({ text });
   } catch (error) {
-    res.status(500).json({ error: 'Error reaching Claude. Please try again.' });
+    res.status(500).json({ error: error.message || 'Error reaching Claude.' });
   }
 }

@@ -1,0 +1,8 @@
+{
+  "name": "claude-projects",
+  "version": "1.0.0",
+  "description": "Three Claude AI project demos",
+  "scripts": {
+    "build": "echo 'Static site, no build needed'"
+  }
+}
